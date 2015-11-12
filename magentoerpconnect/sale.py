@@ -436,6 +436,14 @@ class SaleOrderMoveComment(ConnectorUnit):
 
 
 @magento
+class SaleOrderPricelistCurrencyAssign(ConnectorUnit):
+    _model_name = ['magento.sale.order']
+
+    def change_pricelist_currency(self, binding):
+        pass
+
+
+@magento
 class SaleOrderImportMapper(ImportMapper):
     _model_name = 'magento.sale.order'
 
@@ -453,12 +461,13 @@ class SaleOrderImportMapper(ImportMapper):
     def _add_shipping_line(self, map_record, values):
         record = map_record.source
         amount_incl = float(record.get('base_shipping_incl_tax') or 0.0)
-        amount_excl = float(record.get('shipping_amount') or 0.0)
+        amount_excl = float(record.get('base_shipping_amount') or 0.0)
         if not (amount_incl or amount_excl):
             return values
         line_builder = self.unit_for(MagentoShippingLineBuilder)
         if self.options.tax_include:
-            discount = float(record.get('shipping_discount_amount') or 0.0)
+            discount = float(record.get('base_shipping_discount_amount')
+                             or 0.0)
             line_builder.price_unit = (amount_incl - discount)
         else:
             line_builder.price_unit = amount_excl
@@ -593,6 +602,12 @@ class SaleOrderImportMapper(ImportMapper):
         pricelist_mapper = self.unit_for(PricelistSaleOrderImportMapper)
         return pricelist_mapper.map_record(record).values(**self.options)
 
+    @mapping
+    def magento_currency(self, record):
+        currency_mapper = self.unit_for(SaleOrderCurrencyImportMapper)
+        map_record = currency_mapper.map_record(record)
+        return map_record.values(**self.options)
+
 
 @magento
 class SaleOrderImporter(MagentoImporter):
@@ -690,7 +705,7 @@ class SaleOrderImporter(MagentoImporter):
     def _create_payment(self, binding):
         if not binding.payment_method_id.journal_id:
             return
-        amount = self.magento_record.get('payment', {}).get('amount_paid')
+        amount = self.magento_record.get('payment', {}).get('base_amount_paid')
         if amount:
             amount = float(amount)  # magento gives a str
             binding.openerp_id.automatic_payment(amount)
@@ -733,6 +748,8 @@ class SaleOrderImporter(MagentoImporter):
         if binding.magento_parent_id:
             move_comment = self.unit_for(SaleOrderMoveComment)
             move_comment.move(binding)
+        pricelist_assign = self.unit_for(SaleOrderPricelistCurrencyAssign)
+        pricelist_assign.change_pricelist_currency(binding)
 
     def _get_storeview(self, record):
         """ Return the tax inclusion setting for the appropriate storeview """
@@ -958,6 +975,15 @@ class SaleOrderCommentImportMapper(ImportMapper):
 
 
 @magento
+class SaleOrderCurrencyImportMapper(ImportMapper):
+    """ Mapper for importing currency of sales orders.
+
+    Does nothing in the base addons.
+    """
+    _model_name = 'magento.sale.order'
+
+
+@magento
 class MagentoSaleOrderOnChange(SaleOrderOnChange):
     _model_name = 'magento.sale.order'
 
@@ -974,11 +1000,11 @@ class SaleOrderLineImportMapper(ImportMapper):
 
     @mapping
     def discount_amount(self, record):
-        discount_value = float(record.get('discount_amount') or 0)
+        discount_value = float(record.get('base_discount_amount') or 0)
         if self.options.tax_include:
-            row_total = float(record.get('row_total_incl_tax') or 0)
+            row_total = float(record.get('base_row_total_incl_tax') or 0)
         else:
-            row_total = float(record.get('row_total') or 0)
+            row_total = float(record.get('base_row_total') or 0)
         discount = 0
         if discount_value > 0 and row_total > 0:
             discount = 100 * discount_value / row_total

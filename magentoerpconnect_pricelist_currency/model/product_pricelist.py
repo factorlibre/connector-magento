@@ -34,7 +34,7 @@ class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
     mapping_id = fields.Many2one('product.pricelist.mapping',
-                                 'Pricelist Mapping', select=True)
+                                 'Pricelist Mapping', index=True)
 
     @api.multi
     def get_pricelist_for_currency(self, currency_id):
@@ -44,5 +44,5 @@ class ProductPricelist(models.Model):
         currency_pricelist = self.search([
             ('currency_id', '=', currency_id),
             ('mapping_id', '=', self.mapping_id.id)
-        ])
-        return currency_pricelist and currency_pricelist[0] or self
+        ], limit=1)
+        return currency_pricelist or self

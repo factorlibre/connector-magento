@@ -58,6 +58,6 @@ Settings / options
     'data': [
         'magento_model_view.xml',
     ],
-    'installable': False,
+    'installable': True,
     'application': False,
 }

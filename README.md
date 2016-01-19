@@ -8,7 +8,7 @@ Odoo Connector Magento Modules
 
 This new release of MagentoERPconnect is based on the [OpenERP Connector framework](https://github.com/OCA/connector).
 
-The mailing list for this project is on https://launchpad.net/~openerp-connector-community
+The mailing list for this project is named 'Connectors' and is on https://odoo-community.org/groups
 
 Documentation:
 http://www.odoo-magento-connector.com
@@ -21,7 +21,7 @@ addon | version | summary
 --- | --- | ---
 [customize_example](customize_example/) | 8.0.1.0.0 | Magento Connector Customization Example
 [magentoerpconnect](magentoerpconnect/) | 8.0.3.0.0 | Magento Connector
-[magentoerpconnect_pricing](magentoerpconnect_pricing/) | 2.0.0 | Magento Connector - Pricing
+[magentoerpconnect_pricing](magentoerpconnect_pricing/) | 8.0.2.0.0 | Magento Connector - Pricing
 
 Unported addons
 ---------------

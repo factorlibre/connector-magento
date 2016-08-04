@@ -27,6 +27,7 @@ import xmlrpclib
 import sys
 from collections import defaultdict
 from openerp import models, fields, api, _
+from openerp.addons.connector.connector import ConnectorUnit
 from openerp.addons.connector.queue.job import job, related_action
 from openerp.addons.connector.event import on_record_write
 from openerp.addons.connector.unit.synchronizer import (Importer,
@@ -504,6 +505,17 @@ class ProductImportMapper(ImportMapper):
 
 
 @magento
+class ProductGroupPricesImport(ConnectorUnit):
+    _model_name = ['magento.product.product']
+
+    def update_product_pricelist_items(self, binding, magento_record):
+        pass
+
+    def import_partner_groups(self, record):
+        pass
+
+
+@magento
 class ProductImporter(MagentoImporter):
     _model_name = ['magento.product.product']
 
@@ -524,6 +536,8 @@ class ProductImporter(MagentoImporter):
         for mag_category_id in record['categories']:
             self._import_dependency(mag_category_id,
                                     'magento.product.category')
+        group_prices_import = self.unit_for(ProductGroupPricesImport)
+        group_prices_import.import_partner_groups(self, record)
         if record['type_id'] == 'bundle':
             self._import_bundle_dependencies()
 
@@ -585,6 +599,9 @@ class ProductImporter(MagentoImporter):
             bundle_importer = self.unit_for(BundleImporter)
             bundle_importer.run(binding.id, self.magento_record)
 
+        group_prices_import = self.unit_for(ProductGroupPricesImport)
+        group_prices_import.update_product_pricelist_items(
+            binding, self.magento_record)
 
 ProductImport = ProductImporter  # deprecated
 

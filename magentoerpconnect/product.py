@@ -511,7 +511,7 @@ class ProductGroupPricesImport(ConnectorUnit):
     def update_product_pricelist_items(self, binding, magento_record):
         pass
 
-    def import_partner_groups(self, record):
+    def import_partner_groups(self, importer, record):
         pass
 
 

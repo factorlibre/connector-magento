@@ -170,11 +170,11 @@ class MagentoProductProduct(models.Model):
         return [
             ('simple', 'Simple Product'),
             ('configurable', 'Configurable Product'),
+            ('virtual', 'Virtual Product'),
+            ('downloadable', 'Downloadable Product'),
             # XXX activate when supported
             # ('grouped', 'Grouped Product'),
-            # ('virtual', 'Virtual Product'),
             # ('bundle', 'Bundle Product'),
-            # ('downloadable', 'Downloadable Product'),
         ]
 
     @api.model
@@ -469,7 +469,7 @@ class CatalogImageImporter(Importer):
             request = urllib2.Request(url)
             if self.backend_record.auth_basic_username \
                     and self.backend_record.auth_basic_password:
-                base64string = base64.encodestring(
+                base64string = base64.b64encode(
                     '%s:%s' % (self.backend_record.auth_basic_username,
                                self.backend_record.auth_basic_password))
                 request.add_header("Authorization", "Basic %s" % base64string)
@@ -486,18 +486,23 @@ class CatalogImageImporter(Importer):
         else:
             return binary.read()
 
+    def _write_image_data(self, binding_id, binary, image_data):
+        model = self.model.with_context(connector_no_export=True)
+        binding = model.browse(binding_id)
+        binding.write({'image': base64.b64encode(binary)})
+
     def run(self, magento_id, binding_id):
         self.magento_id = magento_id
         images = self._get_images()
         images = self._sort_images(images)
         binary = None
+        image_data = None
         while not binary and images:
-            binary = self._get_binary_image(images.pop())
+            image_data = images.pop()
+            binary = self._get_binary_image(image_data)
         if not binary:
             return
-        model = self.model.with_context(connector_no_export=True)
-        binding = model.browse(binding_id)
-        binding.write({'image': base64.b64encode(binary)})
+        self._write_image_data(binding_id, binary, image_data)
 
 
 @magento
@@ -625,6 +630,8 @@ class ProductImportMapper(ImportMapper):
     def type(self, record):
         if record['type_id'] == 'simple':
             return {'type': 'product'}
+        elif record['type_id'] in ('virtual', 'downloadable'):
+            return {'type': 'service'}
         return
 
     @mapping
@@ -687,6 +694,17 @@ class ProductImportMapper(ImportMapper):
 
 
 @magento
+class ProductGroupPricesImport(ConnectorUnit):
+    _model_name = ['magento.product.product']
+
+    def update_product_pricelist_items(self, binding, magento_record):
+        pass
+
+    def import_partner_groups(self, importer, record):
+        pass
+
+
+@magento
 class ProductImporter(MagentoImporter):
     _model_name = ['magento.product.product']
 
@@ -707,6 +725,8 @@ class ProductImporter(MagentoImporter):
         for mag_category_id in record['categories']:
             self._import_dependency(mag_category_id,
                                     'magento.product.category')
+        group_prices_import = self.unit_for(ProductGroupPricesImport)
+        group_prices_import.import_partner_groups(self, record)
         if record['type_id'] == 'bundle':
             self._import_bundle_dependencies()
 
@@ -772,6 +792,9 @@ class ProductImporter(MagentoImporter):
             bundle_importer = self.unit_for(BundleImporter)
             bundle_importer.run(binding.id, self.magento_record)
 
+        group_prices_import = self.unit_for(ProductGroupPricesImport)
+        group_prices_import.update_product_pricelist_items(
+            binding, self.magento_record)
 
 ProductImport = ProductImporter  # deprecated
 

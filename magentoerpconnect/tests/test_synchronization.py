@@ -154,13 +154,17 @@ class TestImportMagento(SetUpMagentoSynchronized):
                               backend_id, 54)
 
     def test_import_product_virtual(self):
-        """ Virtual should fail: not yet supported """
+        """ Virtual products are created as service products """
         backend_id = self.backend_id
         with mock_api(magento_base_responses):
-            with self.assertRaises(InvalidDataError):
-                import_record(self.session,
-                              'magento.product.product',
-                              backend_id, 144)
+            import_record(self.session,
+                          'magento.product.product',
+                          backend_id, 144)
+
+        product_model = self.env['magento.product.product']
+        product = product_model.search([('backend_id', '=', backend_id),
+                                        ('magento_id', '=', '144')])
+        self.assertEqual(product.type, 'service')
 
     def test_import_sale_order(self):
         """ Import sale order: check """
@@ -285,7 +289,7 @@ class TestImportMagentoConcurrentSync(SetUpMagentoSynchronized):
         self.registry2 = RegistryManager.get(get_db_name())
         self.cr2 = self.registry2.cursor()
         self.env2 = api.Environment(self.cr2, self.env.uid, {})
-        backend2 = mock.Mock(name='Backend Record')
+        backend2 = mock.MagicMock(name='Backend Record')
         backend2._name = 'magento.backend'
         backend2.id = self.backend_id
         self.backend2 = backend2
@@ -314,5 +318,8 @@ class TestImportMagentoConcurrentSync(SetUpMagentoSynchronized):
             'magento.product.category'
         )
         importer2 = ProductCategoryImporter(connector_env2)
-        with self.assertRaises(RetryableJobError):
-            importer2.run(1)
+        fields_path = ('openerp.addons.magentoerpconnect'
+                       '.unit.import_synchronizer.fields')
+        with mock.patch(fields_path):
+            with self.assertRaises(RetryableJobError):
+                importer2.run(1)

@@ -183,9 +183,9 @@ class MagentoProductProduct(models.Model):
         tax_id = False
         if self.backend_id:
             tax_id = mag_tax_obj.search(
-                [('backend_id', '=', self.backend_id.id)])[0]
+                [('backend_id', '=', self.backend_id.id)], limit=1)
         else:
-            tax_id = mag_tax_obj.search([])[0]
+            tax_id = mag_tax_obj.search([], limit=1)
         return tax_id
 
     tax_class_id = fields.Many2one(comodel_name='magento.tax.class',

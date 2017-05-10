@@ -24,7 +24,7 @@ from openerp.addons.connector.event import (on_record_write,
 import openerp.addons.magentoerpconnect.consumer as magentoerpconnect
 
 EXCLUDED_FIELDS_WRITING = {
-    'product.product': ['magento_bind_ids', 'image_ids'],
+    'product.product': ['magento_bind_ids', 'image_ids', 'real_qty_available'],
     'product.category': ['magento_bind_ids'],
     'magento.product.category': ['magento_bind_ids'],
 }

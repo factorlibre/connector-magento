@@ -16,8 +16,10 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-from openerp import models, fields
+from datetime import datetime, timedelta
+from openerp import api, models, fields
+from openerp.addons.connector.session import ConnectorSession
+from ..magento_product.exporter import export_product_batch
 
 
 class MagentoBackend(models.Model):
@@ -28,6 +30,27 @@ class MagentoBackend(models.Model):
         default=False,
         help="Tic that box if you want to automatically export the"
              "product when it's available for sell (sale_ok is tic)"
-        )
+    )
     default_mag_tax_id = fields.Many2one('magento.tax.class',
                                          string='Default tax')
+    export_products_from_date = fields.Datetime(
+        string='Export products from date',
+    )
+
+    @api.multi
+    def batch_export_products_from_date(self):
+        session = ConnectorSession(self.env.cr, self.env.uid,
+                                   context=self.env.context)
+        export_start_time = datetime.now()
+        for backend in self:
+            from_date = backend.export_products_from_date
+            if from_date:
+                from_date = fields.Datetime.from_string(from_date)
+            else:
+                from_date = None
+            export_product_batch.delay(
+                session, 'magento.product.product', backend.id,
+                from_date)
+        next_time = export_start_time - timedelta(seconds=30)
+        next_time = fields.Datetime.to_string(next_time)
+        self.write({'export_products_from_date': next_time})

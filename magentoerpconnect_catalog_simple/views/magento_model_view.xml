@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        
+
         <record id="view_magento_backend_form" model="ir.ui.view">
             <field name="model">magento.backend</field>
             <field name="inherit_id" ref="magentoerpconnect.view_magento_backend_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@name='update_product_stock_qty']/.." position="before">
+                    <group>
+                        <div>
+                            <label string="Export products since" class="oe_inline"/>
+                            <field name="export_products_from_date"
+                                class="oe_inline"
+                                nolabel="1"/>
+                        </div>
+                        <button name="batch_export_products_from_date"
+                            type="object"
+                            class="oe_highlight"
+                            string="Export in background"/>
+                    </group>
+                </xpath>
                 <xpath expr="//notebook/page[@name='advanced_configuration']/group/field[@name='default_category_id']" position="after">
                     <field name="auto_bind_product"/>
                     <field name="default_mag_tax_id" attrs="{'required': [('auto_bind_product', '!=', False)]}" domain="[('backend_id','=',id)]"/>
                 </xpath>
             </field>
         </record>
-        
+
         <record id="view_magento_tax_class_form" model="ir.ui.view">
             <field name="name">magento.tax.class.form</field>
             <field name="model">magento.tax.class</field>

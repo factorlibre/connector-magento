@@ -20,6 +20,11 @@
 from openerp import models, fields
 from openerp.addons.connector.unit.mapper import (mapping,
                                                   ExportMapper)
+from openerp.addons.connector.queue.job import job, related_action
+from openerp.addons.magentoerpconnect.related_action import (
+    unwrap_binding,
+)
+from openerp.addons.magentoerpconnect.connector import get_environment
 from openerp.addons.magentoerpconnect.unit.delete_synchronizer import (
     MagentoDeleteSynchronizer)
 from openerp.addons.magentoerpconnect.unit.export_synchronizer import (
@@ -28,23 +33,14 @@ from openerp.addons.magentoerpconnect.unit.export_synchronizer import (
 from openerp.addons.magentoerpconnect.backend import magento
 from openerp.addons.connector.exception import MappingError
 from openerp.addons.connector.event import (
-    on_record_write,
     on_record_create
-    )
+)
 from openerp.addons.connector.connector import ConnectorUnit
 import openerp.addons.magentoerpconnect.consumer as magentoerpconnect
 from openerp.addons.magentoerpconnect.product import ProductInventoryExporter
 
 import logging
 _logger = logging.getLogger(__name__)
-
-
-@on_record_write(model_names=[
-    'magento.product.product',
-])
-def delay_export(session, model_name, record_id, vals=None):
-    if vals.get('active', True) is False:
-        magentoerpconnect.delay_unlink(session, model_name, record_id)
 
 
 @magento
@@ -95,7 +91,7 @@ class AttributeSetExportMapper(ExportMapper):
 
 @on_record_create(model_names=[
     'magento.attribute.set',
-    ])
+])
 def delay_export2(session, model_name, record_id, vals=None):
     magentoerpconnect.delay_export(session, model_name,
                                    record_id, vals=vals)
@@ -227,12 +223,24 @@ class ProductProductExporter(MagentoExporter):
             inventory_exporter = self.unit_for(ProductInventoryExporter)
             inventory_exporter.run(self.binding_id, ['magento_qty'])
 
-# @job(default_channel='root.magento')
-# @related_action(action=unwrap_binding)
-# def export_product(session, model_name, record_id):
-#     """ Export a product. """
-#     product = session.env[model_name].browse(record_id)
-#     backend_id = product.backend_id.id
-#     env = get_environment(session, model_name, backend_id)
-#     product_exporter = env.get_connector_unit(ProductProductExporter)
-#     return product_exporter.run(record_id)
+
+@job(default_channel='root.magento')
+@related_action(action=unwrap_binding)
+def export_product(session, model_name, record_id):
+    """ Export a product. """
+    product = session.env[model_name].browse(record_id)
+    backend_id = product.backend_id.id
+    env = get_environment(session, model_name, backend_id)
+    product_exporter = env.get_connector_unit(ProductProductExporter)
+    return product_exporter.run(record_id)
+
+
+@job(default_channel='root.magento')
+def export_product_batch(session, model_name, backend_id, from_date=None):
+    """ Compute products to export from date """
+    search_domain = [('backend_id', '=', backend_id)]
+    if from_date:
+        search_domain.append([('write_date', '>=', from_date)])
+    magento_products = session.env[model_name].search(search_domain)
+    for product in magento_products:
+        export_product.delay(session, model_name, product.id)

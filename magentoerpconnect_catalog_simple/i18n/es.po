@@ -16,94 +16,34 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,ages_range:0
-msgid "Ages Range"
-msgstr "Ages Range"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,anele_education_type_id:0
-msgid "Anele Education Type"
-msgstr "Anele Education Type"
-
-#. module: magentoerpconnect_catalog_simple
 #: model:ir.ui.menu,name:magentoerpconnect_catalog_simple.menu_magento_attribute_set
 msgid "Attribute Sets"
-msgstr "Attribute Sets"
+msgstr "Set de atributos"
 
 #. module: magentoerpconnect_catalog_simple
 #: field:magento.backend,auto_bind_product:0
 msgid "Auto Bind Product"
-msgstr "Auto Bind Product"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_autonomus_community_ids:0
-msgid "Book Autonomous Community"
-msgstr "Book Autonomous Community"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_availability_id:0
-msgid "Book Availability"
-msgstr "Book Availability"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_availability_date:0
-msgid "Book Availability Date"
-msgstr "Book Availability Date"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_binding:0
-msgid "Book Binding"
-msgstr "Book Binding"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_collection:0
-msgid "Book Collection"
-msgstr "Book Collection"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_language_ids:0
-msgid "Book Languages"
-msgstr "Book Languages"
+msgstr "Crear binding de producto automaticamente"
 
 #. module: magentoerpconnect_catalog_simple
 #: field:magento.backend,default_mag_tax_id:0
 msgid "Default tax"
-msgstr "Default tax"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,dimensional_uom_id:0
-msgid "Dimensional UoM"
-msgstr "Dimensional UoM"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,ean13_ids:0
-msgid "EAN13"
-msgstr "EAN13"
+msgstr "Impuesto por defecto"
 
 #. module: magentoerpconnect_catalog_simple
 #: view:magento.backend:magentoerpconnect_catalog_simple.view_magento_backend_form
 msgid "Export in background"
-msgstr "Export in background"
+msgstr "Exportar en segundo plano"
 
 #. module: magentoerpconnect_catalog_simple
 #: view:magento.backend:magentoerpconnect_catalog_simple.view_magento_backend_form
 msgid "Export products since"
-msgstr "Export products since"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,height:0
-msgid "Height"
-msgstr "Height"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,image_ids:0
-msgid "Images"
-msgstr "Images"
+msgstr "Exportar productos desde"
 
 #. module: magentoerpconnect_catalog_simple
 #: field:magento.backend,export_products_from_date:0
-msgid "Import products from date"
-msgstr "Import products from date"
+msgid "Export products from date"
+msgstr "Exportar productos desde fecha"
 
 #. module: magentoerpconnect_catalog_simple
 #: view:magento.attribute.set:magentoerpconnect_catalog_simple.view_magento_attribute_set_form
@@ -112,37 +52,32 @@ msgid "Informations"
 msgstr "Informations"
 
 #. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,length:0
-msgid "Length"
-msgstr "Length"
-
-#. module: magentoerpconnect_catalog_simple
 #: model:ir.model,name:magentoerpconnect_catalog_simple.model_magento_attribute_set
 #: view:magento.attribute.set:magentoerpconnect_catalog_simple.view_magento_attribute_set_form
 #: view:magento.attribute.set:magentoerpconnect_catalog_simple.view_magento_attribute_set_tree
 msgid "Magento Attribute Set"
-msgstr "Magento Attribute Set"
+msgstr "Set de atributos magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: model:ir.actions.act_window,name:magentoerpconnect_catalog_simple.action_magento_attribute_set
 msgid "Magento Attribute Sets"
-msgstr "Magento Attribute Sets"
+msgstr "Sets de atributos magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: model:ir.model,name:magentoerpconnect_catalog_simple.model_magento_backend
 msgid "Magento Backend"
-msgstr "Magento Backend"
+msgstr "Backend Magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: view:product.product:magentoerpconnect_catalog_simple.product_normal_form_view
 msgid "Magento Historic Binding"
-msgstr "Magento Historic Binding"
+msgstr "Bindings históricos en magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: field:magento.product.product,magento_inactive_bind_ids:0
 #: field:product.product,magento_inactive_bind_ids:0
 msgid "Magento Inactive Bindings"
-msgstr "Magento Inactive Bindings"
+msgstr "Bindings inactivos en magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: model:ir.model,name:magentoerpconnect_catalog_simple.model_magento_product_product
@@ -155,27 +90,7 @@ msgstr "Producto Magento"
 #: view:magento.tax.class:magentoerpconnect_catalog_simple.view_magento_tax_class_form
 #: view:magento.tax.class:magentoerpconnect_catalog_simple.view_magento_tax_class_tree
 msgid "Magento Product Tax"
-msgstr "Magento Product Tax"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,image_main:0
-msgid "Main image"
-msgstr "Main image"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,image_main_medium:0
-msgid "Medium image"
-msgstr "Medium image"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,book_page_number:0
-msgid "Number of pages"
-msgstr "Number of pages"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,pricelist_items_website_ids:0
-msgid "Pricelist Items Website"
-msgstr "Pricelist Items Website"
+msgstr "Impuesto de producto en Magento"
 
 #. module: magentoerpconnect_catalog_simple
 #: model:ir.model,name:magentoerpconnect_catalog_simple.model_product_product
@@ -188,44 +103,9 @@ msgid "Product Template"
 msgstr "Plantilla de producto"
 
 #. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,publishing_status_id:0
-msgid "Publishing Status"
-msgstr "Publishing Status"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,sequence:0
-msgid "Sequence"
-msgstr "Sequence"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,sinli_audience:0
-msgid "Sinli audience"
-msgstr "Sinli audience"
-
-#. module: magentoerpconnect_catalog_simple
 #: field:magento.attribute.set,parent_model_id:0
 msgid "Skeleton"
 msgstr "Skeleton"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,dilve_skip:0
-msgid "Skip product on dilve"
-msgstr "Skip product on dilve"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,image_main_small:0
-msgid "Small image"
-msgstr "Small image"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,split_lot_lines:0
-msgid "Split Lot Lines"
-msgstr "Split Lot Lines"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,audience_target_id:0
-msgid "Target audience"
-msgstr "Target audience"
 
 #. module: magentoerpconnect_catalog_simple
 #: code:addons/magentoerpconnect_catalog_simple/models/magento_product/common.py:57
@@ -239,21 +119,6 @@ msgstr "This binding ids %s can not be remove as the field magento_id is not emp
 #: help:magento.backend,auto_bind_product:0
 msgid "Tic that box if you want to automatically export theproduct when it's available for sell (sale_ok is tic)"
 msgstr "Tic that box if you want to automatically export theproduct when it's available for sell (sale_ok is tic)"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,educational_material_type_id:0
-msgid "Type of educational material"
-msgstr "Type of educational material"
-
-#. module: magentoerpconnect_catalog_simple
-#: help:magento.product.product,dimensional_uom_id:0
-msgid "UoM for length, height, width"
-msgstr "UoM for length, height, width"
-
-#. module: magentoerpconnect_catalog_simple
-#: field:magento.product.product,width:0
-msgid "Width"
-msgstr "Width"
 
 #. module: magentoerpconnect_catalog_simple
 #: code:addons/magentoerpconnect_catalog_simple/models/magento_product/common.py:167

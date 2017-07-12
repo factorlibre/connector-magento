@@ -158,8 +158,8 @@ class MagentoAddress(models.Model):
     )
 
     _sql_constraints = [
-        ('openerp_uniq', 'unique(backend_id, openerp_id)',
-         'A partner address can only have one binding by backend.'),
+        ('openerp_uniq', 'unique(backend_id, website_id, openerp_id)',
+         'A partner address can only have one binding by backend/website.'),
     ]
 
 

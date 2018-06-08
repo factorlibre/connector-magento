@@ -159,7 +159,8 @@ class MagentoAPI(object):
                     method, arguments, http_method=http_method,
                     storeview=storeview)
             except Exception:
-                _logger.error("api.call('%s', %s) failed", method, arguments)
+                _logger.error("api.call('%s', %s, %s, %s) failed",
+                              method, arguments, http_method, storeview)
                 raise
             else:
                 _logger.debug("api.call('%s', %s) returned %s in %s seconds",

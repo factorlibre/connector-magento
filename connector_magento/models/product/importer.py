@@ -6,6 +6,7 @@ import logging
 import requests
 import base64
 import sys
+import html2text
 
 from odoo import _
 from odoo.addons.component.core import Component
@@ -171,10 +172,8 @@ class ProductImportMapper(Component):
     # TODO :     categ, special_price => minimal_price
     direct = [('name', 'name'),
               ('id', 'magento_internal_id'),
-              ('description', 'description'),
               ('weight', 'weight'),
               ('cost', 'standard_price'),
-              ('short_description', 'description_sale'),
               ('sku', 'default_code'),
               ('type_id', 'product_type'),
               (normalize_datetime('created_at'), 'created_at'),
@@ -196,6 +195,15 @@ class ProductImportMapper(Component):
         slug in the product REST API """
         if self.collection.version == '2.0':
             return {'external_id': record['sku']}
+
+    @mapping
+    def description(self, record):
+        return {'description': html2text.html2text(record.get('description', ''))}
+
+    @mapping
+    def description_sale(self, record):
+        return {'description_sale': html2text.html2text(
+            record.get('short_description', ''))}
 
     @mapping
     def is_active(self, record):

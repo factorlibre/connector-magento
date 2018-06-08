@@ -91,7 +91,8 @@ class StockPickingAdapter(Component):
 
     def create(self, order_id, items, comment, email, include_comment):
         """ Create a record on the external system """
-        # pylint: disable=method-required-super
+        if self.magento.version == '2.0':
+            return self._call('order/%s/ship' % order_id, {}, http_method='post')
         return self._call('%s.create' % self._magento_model,
                           [order_id, items, comment, email, include_comment])
 

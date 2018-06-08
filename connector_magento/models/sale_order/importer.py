@@ -389,6 +389,9 @@ class SaleOrderImporter(Component):
         for item in resource['items']:
             if item.get('parent_item_id'):
                 child_items.setdefault(item['parent_item_id'], []).append(item)
+            elif item.get('parent_item'):  # 2.0
+                child_items.setdefault(
+                    item['parent_item']['item_id'], []).append(item)
             else:
                 top_items.append(item)
 
@@ -762,6 +765,8 @@ class SaleOrderLineImportMapper(Component):
                     'Magento2')
             return
         result = {}
+        if self.collection.version == '2.0':
+            return
         ifield = record['product_options']
         if ifield:
             import re

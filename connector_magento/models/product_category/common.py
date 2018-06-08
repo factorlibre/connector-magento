@@ -109,6 +109,8 @@ class ProductCategoryAdapter(Component):
 
         :rtype: dict
         """
+        if self.collection.version == '2.0':
+            raise NotImplementedError  # TODO
         def filter_ids(tree):
             children = {}
             if tree['children']:

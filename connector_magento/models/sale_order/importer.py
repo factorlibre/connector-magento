@@ -164,15 +164,21 @@ class SaleOrderImportMapper(Component):
 
     def _add_cash_on_delivery_line(self, map_record, values):
         record = map_record.source
-        amount_excl = float(record.get('cod_fee') or 0.0)
-        amount_incl = float(record.get('cod_tax_amount') or 0.0)
+        if self.collection.version == '2.0':
+            amount_incl = float(record.get('base_grand_total') - record.get('base_subtotal_incl_tax') - record.get('base_shipping_incl_tax'))
+            amount_excl = 0.0  # TODO
+        else:
+            amount_excl = float(record.get('cod_fee') or 0.0)
+            amount_incl = float(record.get('cod_tax_amount') or 0.0)
         if not (amount_excl or amount_incl):
             return values
         line_builder = self.component(usage='order.line.builder.cod')
         tax_include = self.options.tax_include
-        line_builder.price_unit = amount_incl if tax_include else amount_excl
-        line = (0, 0, line_builder.get_line())
-        values['order_line'].append(line)
+        price_unit = amount_incl if tax_include else amount_excl
+        if price_unit:
+            line_builder.price_unit = price_unit
+            line = (0, 0, line_builder.get_line())
+            values['order_line'].append(line)
         return values
 
     def _add_gift_certificate_line(self, map_record, values):

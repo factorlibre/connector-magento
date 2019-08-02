@@ -301,8 +301,9 @@ class SaleOrderAdapter(Component):
 
     def get_parent(self, external_id):
         if self.collection.version == '2.0':
-            res = self.read(external_id)
-            return res.get('relation_parent_id')
+            ret = self.read(external_id,
+                            attributes={'fields': 'relation_parent_id'})
+            return type(ret) == dict and ret.get('relation_parent_id', False)
         return self._call('%s.get_parent' % self._magento_model,
                           [external_id])
 

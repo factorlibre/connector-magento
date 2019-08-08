@@ -351,7 +351,7 @@ class GenericAdapter(AbstractComponent):
         res = self._call(self._magento2_model, None)
         return next(record for record in res if record['id'] == external_id)
 
-    def search_read(self, filters=None):
+    def search_read(self, filters=None, attributes=None):
         """ Search records according to some criterias
         and returns their information"""
         if self.collection.version == '1.7':
@@ -359,6 +359,8 @@ class GenericAdapter(AbstractComponent):
         params = {}
         if self._magento2_search:
             params.update(self.get_searchCriteria(filters))
+            if attributes:
+                params.update(attributes)
         else:
             if filters:
                 raise NotImplementedError

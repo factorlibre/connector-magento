@@ -105,9 +105,10 @@ class MagentoPickingExporter(Component):
                     'qty': val,
                 } for key, val in get_lines_info().items()]
             }
+            sale_external_id = binding.sale_id.magento_bind_ids.filtered(
+                lambda bind: bind.backend_id == binding.backend_id).external_id
             external_id = self.backend_adapter._call(
-                'order/%s/ship' %
-                binding.sale_id.magento_bind_ids[0].external_id,
+                'order/%s/ship' % sale_external_id,
                 arguments, http_method='post')
 
         self.binder.bind(external_id, binding)

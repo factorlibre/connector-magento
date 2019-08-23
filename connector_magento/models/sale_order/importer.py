@@ -807,6 +807,11 @@ class SaleOrderLineImportMapper(Component):
         """ In Magento 2, base_row_total_incl_tax may not be present
         if no taxes apply """
         result = {}
+        if 'base_price' in record and 'base_price_incl_tax' in record:
+            result['price_unit'] = float(record.get('base_price_incl_tax')) \
+                                    if self.options.tax_include \
+                                    else record.get('base_price')
+            return result
         base_row_total = float(record['base_row_total'] or 0.)
         base_row_total_incl_tax = float(
             record.get('base_row_total_incl_tax') or base_row_total)

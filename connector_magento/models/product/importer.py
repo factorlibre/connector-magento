@@ -198,6 +198,10 @@ class ProductImportMapper(Component):
             return {'external_id': record['sku']}
 
     @mapping
+    def magento_id(self, record):
+        return {'magento_id': record.get('id', '')}
+
+    @mapping
     def description(self, record):
         return {'description': html2text.html2text(record.get('description', ''))}
 
@@ -371,6 +375,17 @@ class ProductImporter(Component):
             binding.mapped('orderpoint_ids').write({'active': False})
         res = super()._update(binding, data)
         return res
+
+    def _get_binding(self):
+        if self.collection.version == '1.7':
+            return super(ProductImporter, self)._get_binding()
+        binding = self.binder.custom_to_internal(
+            'magento_id', self.magento_record['id'])
+        if not binding:
+            binding = super(ProductImporter, self)._get_binding()
+            if binding and not binding.magento_id:
+                binding.magento_id = self.magento_record['id']
+        return binding
 
     def _after_import(self, binding):
         """ Hook called at the end of the import """

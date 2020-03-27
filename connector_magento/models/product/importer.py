@@ -188,6 +188,7 @@ class ProductImportMapper(Component):
               ('cost', 'standard_price'),
               ('sku', 'default_code'),
               ('type_id', 'product_type'),
+              ('id', 'magento_id'),
               (normalize_datetime('created_at'), 'created_at'),
               (normalize_datetime('updated_at'), 'updated_at'),
               ]
@@ -340,6 +341,15 @@ class ProductImporter(Component):
     def _create(self, data):
         binding = super(ProductImporter, self)._create(data)
         self.backend_record.add_checkpoint(binding)
+        return binding
+
+    def _get_binding(self):
+        binding = self.binder.custom_to_internal(
+            'magento_id', self.magento_record['id'])
+        if not binding:
+            binding = super(ProductImporter, self)._get_binding()
+            if binding and not binding.magento_id:
+                binding.magento_id = self.magento_record['id']
         return binding
 
     def _after_import(self, binding):

@@ -391,7 +391,7 @@ class ProductImporter(Component):
 
 
 class ProductInventoryExporter(Component):
-    _name = 'magento.product.product.exporter'
+    _name = 'magento.product.product.inventory.exporter'
     _inherit = 'magento.exporter'
     _apply_on = ['magento.product.product']
     _usage = 'product.inventory.exporter'

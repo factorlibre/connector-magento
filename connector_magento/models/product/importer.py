@@ -361,7 +361,7 @@ class ProductImporter(Component):
 
 
 class ProductInventoryExporter(Component):
-    _name = 'magento.product.product.exporter'
+    _name = 'magento.product.product.inventory.exporter'
     _inherit = 'magento.exporter'
     _apply_on = ['magento.product.product']
     _usage = 'product.inventory.exporter'
@@ -374,6 +374,15 @@ class ProductInventoryExporter(Component):
 
     def _get_data(self, binding, fields):
         result = {}
+        if self.collection.version == '2.0':
+            if 'magento_qty' in fields:
+                result.update({
+                    'sku': self.binder.to_external(binding),
+                    'source_code': 'default',
+                    'quantity': binding.magento_qty,
+                    'status': 1,
+                })
+            return result
         if 'magento_qty' in fields:
             result.update({
                 'qty': binding.magento_qty,

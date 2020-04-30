@@ -444,13 +444,15 @@ class AddressImportMapper(Component):
     def is_billing(record):
         return (
             record.get('default_billing')  # Magento 2.x
-            or record.get('is_default_billing'))  # Magento 1.x
+            or record.get('is_default_billing')  # Magento 1.x
+            or record.get('address_type') == 'billing')
 
     @staticmethod
     def is_shipping(record):
         return (
             record.get('default_shipping')  # Magento 2.x
-            or record.get('is_default_shipping'))  # Magento 1.x
+            or record.get('is_default_shipping')  # Magento 1.x
+            or record.get('address_type') == 'shipping')
 
     @mapping
     def default_billing(self, record):

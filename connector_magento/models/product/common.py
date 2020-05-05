@@ -271,7 +271,13 @@ class ProductProductAdapter(Component):
         if self.collection.version == '1.7':
             return self._call('ol_catalog_product.update',
                               [int(external_id), data, storeview_id, 'id'])
-        raise NotImplementedError  # TODO
+        return self._call(
+            'products/%s' % external_id, arguments={
+                'product': data
+            },
+            http_method='put',
+            storeview='all',
+        )
 
     def get_images(self, external_id, storeview_id=None, data=None):
         """ Fetch image metadata either by querying Magento 1.x, or extracting

@@ -9,6 +9,7 @@ import sys
 import html2text
 
 from odoo import _
+from odoo import tools
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError, InvalidDataError
@@ -212,6 +213,10 @@ class ProductImportMapper(Component):
         status == 1 in Magento means active.
         Magento 2.x returns an integer, 1.x a string """
         return {'active': (record.get('status') in (1, '1'))}
+
+    @mapping
+    def visibilty(self, record):
+        return {'visibility': tools.ustr(record.get('visibility', '4'))}
 
     @mapping
     def price(self, record):

@@ -644,7 +644,13 @@ class SaleOrderImporter(Component):
                                   parent_partner=partner))
             return address_bind.odoo_id.id
 
-        billing_id = create_address(record['billing_address'])
+        billing_id = None
+        if record['billing_address'].get('customer_id'):
+            billing_binding = partner_binder.to_internal(
+                record['billing_address']['customer_id'])
+            billing_id = billing_binding.odoo_id.id
+        if not billing_id:
+            billing_id = create_address(record['billing_address'])
         shipping_id = None
         shipping_address = None
         if self.collection.version == '1.7' and record.get('shipping_address'):

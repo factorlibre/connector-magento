@@ -151,6 +151,7 @@
                                 <field name="account_analytic_id" groups="analytic.group_analytic_accounting" />
                                 <field name="fiscal_position_id"/>
                                 <field name="is_multi_company"/>
+                                <field name="use_source_items"/>
                             </group>
                         </page>
 

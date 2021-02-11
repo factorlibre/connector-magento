@@ -145,6 +145,7 @@ class SaleOrderImportMapper(Component):
               ('tax_amount', 'total_amount_tax'),
               (normalize_datetime('created_at'), 'date_order'),
               ('store_id', 'storeview_id'),
+              ('customer_note', 'customer_comments'),
               ]
 
     children = [('items', 'magento_order_line_ids', 'magento.sale.order.line'),

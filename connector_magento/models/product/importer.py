@@ -186,12 +186,15 @@ class ProductImportMapper(Component):
     # TODO :     categ, special_price => minimal_price
     direct = [('name', 'name'),
               ('weight', 'weight'),
-              ('cost', 'standard_price'),
               ('sku', 'default_code'),
               ('type_id', 'product_type'),
               (normalize_datetime('created_at'), 'created_at'),
               (normalize_datetime('updated_at'), 'updated_at'),
               ]
+
+    @mapping
+    def standard_price(self, record):
+        return {"standard_price": record.get("cost")}
 
     @mapping
     def description(self, record):

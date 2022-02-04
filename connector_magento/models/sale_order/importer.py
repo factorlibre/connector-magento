@@ -312,17 +312,20 @@ class SaleOrderImportMapper(Component):
                         " missing" % record['payment']['method'])
         return {'payment_mode_id': method.id}
 
-    @mapping
-    def shipping_method(self, record):
+    def calculate_ifield(self, record):
         ifield = None
         if self.collection.version == '2.0':
             shippings = record['extension_attributes']['shipping_assignments']
             ifield = shippings and shippings[0]['shipping'].get('method')
         ifield = ifield or record.get('shipping_method') or \
             record.get('shipping_description')
+        return ifield
+
+    @mapping
+    def shipping_method(self, record):
+        ifield = self.calculate_ifield(record)
         if not ifield:
             return
-
         user = self.env['res.users'].browse(self.env.uid)
         company_id = user and user.company_id.id \
             or self.backend_record.company_id.id
@@ -466,13 +469,7 @@ class SaleOrderImporter(Component):
         rules = self.component(usage='sale.import.rule')
         rules.check(self.magento_record)
 
-        ifield = None
-        if self.collection.version == '2.0':
-            shippings = self.magento_record[
-                'extension_attributes']['shipping_assignments']
-            ifield = shippings and shippings[0]['shipping'].get('method')
-        ifield = ifield or self.magento_record.get('shipping_method') or \
-            self.magento_record.get('shipping_description')
+        ifield = self.mapper.calculate_ifield(self.magento_record)
         if not ifield:
             return
 
@@ -493,6 +490,7 @@ class SaleOrderImporter(Component):
             })
 
     def _link_parent_orders(self, binding):
+
         """ Link the magento.sale.order to its parent orders.
 
         When a Magento sales order is modified, it:
